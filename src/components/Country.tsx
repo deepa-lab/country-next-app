@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import Search from "./Search";
+
 const Country = () => {
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState();
+    const [error, setError] = useState<string>('');
     const [query, setQuery] = useState("");
     const [filter, setFilter] = useState("");
     const [paginate, setpaginate] = useState(8);
@@ -21,7 +21,7 @@ const Country = () => {
                 const data = await res.json();
                 setCountries(data);
             } catch (error) {
-                setError(error)
+                setError((error as Error).message)
             } finally {
                 setLoading(false);
             }
@@ -31,7 +31,7 @@ const Country = () => {
     const data = Object.values(countries);
     const search_parameters = Object.keys(Object.assign({}, ...data));
 
-    function search(data) {
+    function search(data: any[]) {
         return data.filter(
             (item) =>
             item.region.includes(filter) && search_parameters.some((parameter) =>
@@ -39,12 +39,13 @@ const Country = () => {
                 )
         );
     }
-    const load_more = (event) => {
+    const load_more = () => {
         setpaginate((prevValue) => prevValue + 8);
       };
-    const filter_items = [...new Set(data.map((item) => item.region))];
+    
+    const filter_items = [...new Set(data.map((item:{region:''}) => item.region))];
     if (error) {
-        return <>{error.message}</>;
+        return <>{error}</>;
     } else if (loading) {
         return <>loading...</>;
     } else {
@@ -96,45 +97,5 @@ const Country = () => {
             </div>
         );
     }
-
-    //     
-    //    return <div className="wrapper">
-    //     <div className="search-wrapper">
-    //       <label htmlFor="search-form">
-    //         <input
-    //           type="search"
-    //           name="search-form"
-    //           id="search-form"
-    //           className="search-input"
-    //           placeholder="Search for..."
-    //           onChange={(e) => setQuery(e.target.value)}
-    //         />
-    //         <span className="sr-only">Search countries here</span>
-    //       </label>
-    //     </div>
-
-
-    //             {if (loading) return <p>Loading....</p>}
-    //             else if(error) return (<p>{error}</p>)
-    //             else {
-
-    //                 return <div className="wrapper">
-    //                 <ul className="card-grid">
-    //                   {data.map((item) => (
-    //                     <li key={item.alpha3Code}>
-    //                       <article className="card">
-    //                         <div className="card-image">
-    //                           <img src={item.flag.large} alt={item.name} />
-    //                         </div>
-    //                         <div className="card-content">
-    //                           <h2 className="card-name">{item.name}</h2>
-    //                           </div>
-    //                       </article>
-    //                     </li>
-    //                   ))}
-    //                 </ul>
-    //               </div>
-    //               </div>}
-
 }
 export default Country

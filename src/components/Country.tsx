@@ -69,8 +69,8 @@ const Country = () => {
   className="custom-select"
   aria-label="Filter Countries By Region">
   <option value="">Filter By Region</option>
-  {filter_items.map((item) => (
-   <option value={item}>Filter By {item}</option>
+  {filter_items.map((item, i) => (
+   <option key = {i} value={item}>Filter By {item}</option>
   ))}
 </select>
 <span className="focus"></span>
